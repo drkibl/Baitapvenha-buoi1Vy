@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8fafc">
+  <meta name="description" content="Portfolio của Phan Ngọc Tường Vy, sinh viên Thương mại điện tử UEH, định hướng Digital Marketing và vận hành thương mại điện tử.">
+  <title>Phan Ngọc Tường Vy | E-commerce & Digital Marketing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#35285F",
+            plum: { 50: "#F5F2F9", 100: "#E9E1F1", 200: "#D5C7E2", 300: "#B49ACB", 500: "#7A5197", 600: "#684486", 700: "#5344A9", 800: "#453889", 900: "#35285F" },
+            coral: { 50: "#FFF7F5", 100: "#FFF0ED", 200: "#FBD8D1", 300: "#F8B5A7", 500: "#F47F6B", 600: "#E66D5E" },
+            berry: { 50: "#F9EFF6", 100: "#F2DDEA", 500: "#BB5098", 600: "#A33F82", 700: "#87336C" },
+            sun: { 50: "#FFFCED", 100: "#FFF7CF", 300: "#F8EB86", 500: "#F5E63C" },
+            mist: { 50: "#FBF9FD", 100: "#F5F0F9" }
+          },
+          fontFamily: {
+            sans: ["Montserrat", "sans-serif"],
+            display: ["Montserrat", "sans-serif"]
+          },
+          boxShadow: {
+            soft: "0 20px 60px rgba(83, 68, 169, .12)",
+            card: "0 12px 35px rgba(83, 68, 169, .09)"
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+    body { font-family: "Montserrat", sans-serif; background-color: #E2E0E4; }
+    h1, h2, h3, .font-display { font-family: "Montserrat", sans-serif; }
+    ::selection { background: #F5E63C; color: #35285F; }
+    .hero-grid {
+      background-image: radial-gradient(rgba(83, 68, 169, .12) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+    .timeline-line::before {
+      content: "";
+      position: absolute;
+      top: .7rem;
+      bottom: .7rem;
+      left: .55rem;
+      width: 1px;
+      background: #D5C7E2;
+    }
+    .reveal { animation: rise-in .7s ease-out both; }
+    #rose-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .falling-bouquet {
+      position: absolute;
+      top: var(--flower-top, -110px);
+      left: var(--flower-left);
+      width: 82px;
+      height: 96px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      pointer-events: auto;
+      cursor: pointer;
+      filter: drop-shadow(0 5px 5px rgba(53, 40, 95, .18));
+      transform-origin: 50% 35%;
+      animation: bouquet-fall var(--fall-duration) linear forwards, bouquet-sway 3.2s ease-in-out infinite alternate;
+      will-change: transform, top;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .falling-bouquet svg { display: block; width: 100%; height: 100%; overflow: visible; }
+    @keyframes bouquet-fall {
+      from { top: -110px; }
+      to { top: calc(100vh + 115px); }
+    }
+    @keyframes bouquet-sway {
+      from { margin-left: -13px; rotate: -9deg; }
+      to { margin-left: 13px; rotate: 9deg; }
+    }
+    .rose-petal {
+      position: fixed;
+      z-index: 9992;
+      width: 13px;
+      height: 19px;
+      border-radius: 80% 15% 70% 30%;
+      background: var(--petal-color);
+      pointer-events: none;
+      box-shadow: inset -2px -2px 3px rgba(75, 20, 45, .14);
+      animation: petal-burst 1.15s cubic-bezier(.12,.65,.25,1) forwards;
+      will-change: transform, opacity;
+    }
+    @keyframes petal-burst {
+      0% { opacity: 1; transform: translate(-50%, -50%) rotate(0) scale(.5); }
+      65% { opacity: 1; }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--petal-x)), calc(-50% + var(--petal-y))) rotate(var(--petal-rotate)) scale(.9); }
+    }
+    #greeting-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(31, 24, 55, .55);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    #greeting-modal.is-open { opacity: 1; visibility: visible; }
+    .greeting-card {
+      position: relative;
+      width: min(100%, 590px);
+      max-height: min(88vh, 760px);
+      overflow-y: auto;
+      border: 1px solid rgba(187, 80, 152, .35);
+      border-radius: 28px;
+      padding: clamp(24px, 5vw, 42px);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(245, 230, 60, .16), transparent 25%),
+        radial-gradient(circle at 90% 92%, rgba(187, 80, 152, .12), transparent 28%),
+        #fffdfb;
+      box-shadow: 0 28px 90px rgba(25, 16, 51, .3);
+      transform: scale(.82) translateY(18px);
+      transition: transform .38s cubic-bezier(.2,.8,.2,1);
+    }
+    #greeting-modal.is-open .greeting-card { transform: scale(1) translateY(0); }
+    .greeting-card::before {
+      position: absolute;
+      inset: 9px;
+      border: 1px solid rgba(122, 81, 151, .24);
+      border-radius: 21px;
+      content: "";
+      pointer-events: none;
+    }
+    .greeting-rose { color: #BB5098; }
+    #greeting-music-toggle {
+      position: absolute;
+      top: 28px;
+      left: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(122, 81, 151, .18);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: rgba(245, 242, 249, .92);
+      color: #5344A9;
+      font: 600 10px/1.2 "Montserrat", sans-serif;
+      cursor: pointer;
+    }
+    #greeting-music-toggle:focus-visible, .falling-bouquet:focus-visible, #greeting-close:focus-visible {
+      outline: 3px solid #F5E63C;
+      outline-offset: 3px;
+    }
+    #greeting-music-toggle.is-playing [data-music-icon] { animation: music-note 1.15s ease-in-out infinite; }
+    @keyframes music-note { 50% { transform: translateY(-3px) rotate(12deg) scale(1.12); } }
+    @keyframes rise-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      #greeting-modal, .greeting-card { transition-duration: .01ms !important; }
+      .falling-bouquet { top: var(--flower-top); animation: none; }
+    }
+    @media (max-width: 480px) {
+      #greeting-music-toggle { top: 21px; left: 21px; padding: 6px 8px; }
+      #greeting-close { top: 21px; right: 21px; }
+    }
+  </style>
+</head>
+<body class="text-slate-700 antialiased">
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-10" aria-label="Điều hướng chính">
+      <a href="#trang-chu" class="font-display text-xl font-extrabold tracking-tight text-ink">
+        Tường Vy<span class="text-plum-600">.</span>
+      </a>
+      <button id="menu-button" class="inline-flex items-center justify-center rounded-xl p-2 text-ink hover:bg-plum-50 md:hidden" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu">
+        <i data-lucide="menu" class="h-6 w-6"></i>
+      </button>
+      <div class="hidden items-center gap-8 md:flex">
+        <a class="nav-link text-sm font-semibold text-slate-600 transition hover:text-plum-700" href="#gioi-thieu">Giới thiệu</a>
+        <a class="nav-link text-sm font-semibold text-slate-600 transition hover:text-plum-700" href="#kinh-nghiem">Kinh nghiệm</a>
+        <a class="nav-link text-sm font-semibold text-slate-600 transition hover:text-plum-700" href="#du-an">Dự án</a>
+        <a class="nav-link text-sm font-semibold text-slate-600 transition hover:text-plum-700" href="#ky-nang">Kỹ năng</a>
+        <a class="rounded-full bg-plum-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-plum-900" href="#lien-he">Liên hệ</a>
+      </div>
+    </nav>
+    <div id="mobile-menu" class="hidden border-t border-slate-100 bg-white px-5 pb-4 md:hidden">
+      <div class="flex flex-col gap-1">
+        <a class="mobile-link rounded-lg px-3 py-3 font-semibold text-slate-700 hover:bg-plum-50" href="#gioi-thieu">Giới thiệu</a>
+        <a class="mobile-link rounded-lg px-3 py-3 font-semibold text-slate-700 hover:bg-plum-50" href="#kinh-nghiem">Kinh nghiệm</a>
+        <a class="mobile-link rounded-lg px-3 py-3 font-semibold text-slate-700 hover:bg-plum-50" href="#du-an">Dự án</a>
+        <a class="mobile-link rounded-lg px-3 py-3 font-semibold text-slate-700 hover:bg-plum-50" href="#ky-nang">Kỹ năng</a>
+        <a class="mobile-link rounded-lg px-3 py-3 font-semibold text-plum-700 hover:bg-plum-50" href="#lien-he">Liên hệ</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="trang-chu" class="relative overflow-hidden bg-white pt-28 sm:pt-32">
+      <div class="hero-grid absolute inset-y-0 right-0 hidden w-[47%] md:block"></div>
+      <div class="pointer-events-none absolute -right-24 top-28 h-72 w-72 rounded-full bg-plum-100/70 blur-3xl"></div>
+      <div class="pointer-events-none absolute -left-24 bottom-0 h-56 w-56 rounded-full bg-coral-100/60 blur-3xl"></div>
+      <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 pt-10 sm:px-8 sm:pb-24 lg:grid-cols-[1.05fr_.95fr] lg:gap-16 lg:px-10 lg:pb-28">
+        <div class="reveal order-2 lg:order-1">
+          <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-plum-100 bg-plum-50 px-4 py-2 text-xs font-bold uppercase tracking-[.13em] text-plum-800">
+            <span class="h-2 w-2 rounded-full bg-plum-500"></span>
+            Portfolio cá nhân
+          </div>
+          <p class="mb-3 text-sm font-bold uppercase tracking-[.2em] text-plum-700">Xin chào, tôi là</p>
+          <h1 class="font-display text-4xl font-extrabold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-[3.55rem]">
+            PHAN NGỌC<br class="hidden sm:block"> TƯỜNG VY<span class="text-coral-500">.</span>
+          </h1>
+          <p class="mt-6 max-w-2xl font-display text-lg font-bold leading-relaxed text-slate-700 sm:text-xl">
+            Sinh viên năm cuối Thương mại điện tử - UEH
+          </p>
+          <p class="mt-1 text-base font-medium text-slate-500">Digital Marketing &amp; E-commerce Operations</p>
+          <p class="mt-5 max-w-xl text-base leading-8 text-slate-600">
+            Tôi yêu thích cách công nghệ và trải nghiệm khách hàng tạo nên những hành trình mua sắm đáng nhớ. Với tinh thần học hỏi và kinh nghiệm vận hành thực tế, tôi sẵn sàng đóng góp và phát triển trong lĩnh vực thương mại điện tử.
+          </p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <a href="#du-an" class="inline-flex items-center justify-center gap-2 rounded-full bg-coral-500 px-6 py-3.5 text-sm font-bold text-ink shadow-lg shadow-coral-200/70 transition hover:-translate-y-0.5 hover:bg-coral-600">
+              Xem dự án của tôi <i data-lucide="arrow-up-right" class="h-4 w-4"></i>
+            </a>
+            <a href="#lien-he" class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3.5 text-sm font-bold text-ink transition hover:border-plum-300 hover:bg-plum-50">
+              Liên hệ ngay <i data-lucide="send" class="h-4 w-4"></i>
+            </a>
+          </div>
+          <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-medium text-slate-500">
+            <span class="inline-flex items-center gap-2"><i data-lucide="map-pin" class="h-4 w-4 text-plum-600"></i>Hưng Long, TP.HCM</span>
+            <span class="inline-flex items-center gap-2"><i data-lucide="graduation-cap" class="h-4 w-4 text-plum-600"></i>UEH · Thương mại điện tử</span>
+          </div>
+        </div>
+        <div class="reveal order-1 mx-auto w-full max-w-md lg:order-2 lg:max-w-none" style="animation-delay: .12s">
+          <div class="relative mx-auto max-w-[430px]">
+            <div class="absolute -left-5 top-14 z-10 hidden rounded-2xl border border-white/80 bg-white/90 p-4 shadow-card backdrop-blur sm:block">
+              <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-plum-50 text-plum-700"><i data-lucide="shopping-bag" class="h-5 w-5"></i></span>
+                <div><p class="text-xs font-medium text-slate-500">Định hướng</p><p class="text-sm font-bold text-ink">E-commerce</p></div>
+              </div>
+            </div>
+            <div class="absolute -right-3 bottom-14 z-10 rounded-2xl border border-white/80 bg-white/90 p-4 shadow-card backdrop-blur sm:-right-5">
+              <div class="flex items-center gap-3">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-coral-50 text-coral-600"><i data-lucide="heart-handshake" class="h-5 w-5"></i></span>
+                <div><p class="text-xs font-medium text-slate-500">Thế mạnh</p><p class="text-sm font-bold text-ink">Trải nghiệm khách hàng</p></div>
+              </div>
+            </div>
+            <div class="overflow-hidden rounded-[2rem] border-[10px] border-white bg-plum-100 shadow-soft">
+              <img src="./avatar-tuong-vy.jpg" alt="Ảnh đại diện của Phan Ngọc Tường Vy" class="h-[390px] w-full object-cover object-center sm:h-[500px]">
+            </div>
+            <div class="absolute -bottom-5 -left-4 -z-10 h-40 w-40 rounded-full border-[18px] border-plum-100 sm:-left-8"></div>
+            <div class="absolute -right-3 -top-4 -z-10 h-24 w-24 rounded-full bg-sun-100"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gioi-thieu" class="scroll-mt-24 py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="grid gap-12 lg:grid-cols-[.9fr_1.1fr] lg:gap-20">
+          <div>
+            <p class="mb-3 text-sm font-bold uppercase tracking-[.18em] text-plum-700">Về tôi</p>
+            <h2 class="font-display text-3xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">Học hỏi mỗi ngày,<br>tạo giá trị bền vững.</h2>
+            <p class="mt-6 leading-8 text-slate-600">
+              Là sinh viên năm cuối chuyên ngành Thương mại điện tử tại Đại học Kinh tế TP.HCM (UEH), tôi có tinh thần học hỏi cao và mong muốn vận dụng linh hoạt kiến thức nền tảng cùng kỹ năng thực tế vào công việc. Tôi quan tâm đến vận hành thương mại điện tử, chăm sóc khách hàng và Digital Marketing.
+            </p>
+            <div class="mt-8 flex items-center gap-4 rounded-2xl border border-plum-100 bg-plum-50/70 p-5">
+              <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-plum-700 shadow-sm"><i data-lucide="target" class="h-6 w-6"></i></span>
+              <div><p class="font-display font-bold text-ink">Mục tiêu nghề nghiệp</p><p class="mt-1 text-sm leading-6 text-slate-600">Phát triển năng lực trong môi trường thương mại điện tử năng động.</p></div>
+            </div>
+          </div>
+          <div class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-card sm:p-8">
+            <div class="flex items-start gap-4">
+              <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-plum-50 text-plum-700"><i data-lucide="graduation-cap" class="h-6 w-6"></i></span>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-[.16em] text-plum-700">Học vấn</p>
+                <h3 class="mt-2 font-display text-xl font-extrabold text-ink">Đại học Kinh tế TP.HCM (UEH)</h3>
+                <p class="mt-2 font-semibold text-slate-600">Chuyên ngành Thương mại điện tử</p>
+                <div class="mt-5 flex flex-wrap gap-2">
+                  <span class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">09/2024 - hiện tại</span>
+                  <span class="rounded-full bg-plum-50 px-3 py-1.5 text-xs font-semibold text-plum-800">Hệ Vừa học vừa làm - buổi tối</span>
+                </div>
+              </div>
+            </div>
+            <div class="my-7 border-t border-slate-100"></div>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="rounded-2xl bg-slate-50 p-4">
+                <i data-lucide="compass" class="h-5 w-5 text-plum-700"></i>
+                <p class="mt-3 text-sm font-bold text-ink">Lĩnh vực quan tâm</p>
+                <p class="mt-1 text-sm text-slate-500">Digital Marketing · E-commerce</p>
+              </div>
+              <div class="rounded-2xl bg-slate-50 p-4">
+                <i data-lucide="sparkles" class="h-5 w-5 text-coral-600"></i>
+                <p class="mt-3 text-sm font-bold text-ink">Định hướng phát triển</p>
+                <p class="mt-1 text-sm text-slate-500">Digital Marketing · E-commerce Operations</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="du-an" class="scroll-mt-24 bg-white py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="mb-10 flex flex-col justify-between gap-5 sm:mb-12 sm:flex-row sm:items-end">
+          <div>
+            <p class="mb-3 text-sm font-bold uppercase tracking-[.18em] text-plum-700">Dự án nổi bật</p>
+            <h2 class="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Từ ý tưởng đến trải nghiệm số.</h2>
+          </div>
+          <p class="max-w-md leading-7 text-slate-500">Dự án website đầu tiên, nơi tôi bắt đầu khám phá cách xây dựng một điểm chạm thương hiệu trực tuyến.</p>
+        </div>
+        <article class="group overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-50 shadow-card transition hover:-translate-y-1 hover:shadow-soft">
+          <div class="grid lg:grid-cols-[1.08fr_.92fr]">
+            <div class="relative min-h-[270px] overflow-hidden bg-[#efe8dc] sm:min-h-[390px]">
+              <img src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&amp;fit=crop&amp;w=1200&amp;q=85" alt="Nến thơm trong không gian ấm áp, hình ảnh minh họa dự án Homie Candle" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://placehold.co/1200x800/f3eee6/145d56?text=Homie+Candle';">
+              <div class="absolute inset-0 bg-gradient-to-t from-ink/45 via-transparent to-transparent"></div>
+              <span class="absolute bottom-5 left-5 inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-ink backdrop-blur"><i data-lucide="flame" class="h-4 w-4 text-coral-600"></i> Website thương mại điện tử</span>
+            </div>
+            <div class="flex flex-col justify-center p-7 sm:p-10 lg:p-12">
+              <p class="text-sm font-bold uppercase tracking-[.16em] text-plum-700">Dự án cá nhân</p>
+              <h3 class="mt-3 font-display text-3xl font-extrabold text-ink sm:text-4xl">Homie Candle</h3>
+              <p class="mt-4 leading-8 text-slate-600">
+                Website thương mại điện tử kinh doanh sản phẩm nến thơm nhập khẩu từ các thương hiệu lớn. Dự án đầu tiên giúp tôi vận dụng kiến thức về website và trải nghiệm mua sắm trực tuyến.
+              </p>
+              <div class="mt-6 flex flex-wrap gap-2">
+                <span class="rounded-full border border-plum-100 bg-white px-3 py-1.5 text-xs font-semibold text-plum-800">E-commerce</span>
+                <span class="rounded-full border border-plum-100 bg-white px-3 py-1.5 text-xs font-semibold text-plum-800">Website</span>
+                <span class="rounded-full border border-plum-100 bg-white px-3 py-1.5 text-xs font-semibold text-plum-800">Nến thơm</span>
+              </div>
+              <div class="mt-8 flex flex-wrap items-center gap-3">
+                <a href="https://homiecandle.id.vn" target="_blank" rel="noopener noreferrer" class="inline-flex w-fit items-center gap-2 rounded-full bg-plum-700 px-6 py-3 text-sm font-bold text-white transition hover:bg-plum-900">
+                  Khám phá website <i data-lucide="external-link" class="h-4 w-4"></i>
+                </a>
+                <a href="https://www.facebook.com/homiecandle" target="_blank" rel="noopener noreferrer" aria-label="Facebook Homie Candle (mở tab mới)" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-plum-200 bg-white text-plum-700 transition hover:border-plum-700 hover:bg-plum-50">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M13.5 21v-8.2h2.8l.4-3.2h-3.2v-2c0-.9.3-1.6 1.6-1.6h1.7V3.1c-.3 0-1.4-.1-2.6-.1-2.6 0-4.4 1.6-4.4 4.5v2.1H7v3.2h2.8V21h3.7Z"/></svg>
+                </a>
+                <a href="https://www.instagram.com/homiecandle.ecom?srtk=MWM2ajdhdWoyejhzaA==" target="_blank" rel="noopener noreferrer" aria-label="Instagram Homie Candle (mở tab mới)" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-coral-200 bg-white text-coral-600 transition hover:border-coral-500 hover:bg-coral-50">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".75" fill="currentColor" stroke="none"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="kinh-nghiem" class="scroll-mt-24 py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="mb-12">
+          <p class="mb-3 text-sm font-bold uppercase tracking-[.18em] text-plum-700">Hành trình làm việc</p>
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Kinh nghiệm &amp; hoạt động.</h2>
+        </div>
+        <div class="grid gap-12 lg:grid-cols-[1.1fr_.9fr] lg:gap-16">
+          <div class="relative space-y-8 pl-8">
+            <div class="timeline-line absolute inset-y-0 left-0 w-5"></div>
+            <article class="relative rounded-3xl border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+              <span class="absolute -left-[2.05rem] top-8 h-4 w-4 rounded-full border-4 border-white bg-plum-600 ring-2 ring-plum-100"></span>
+              <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-[.14em] text-plum-700">2020 - hiện tại</p>
+                  <h3 class="mt-2 font-display text-xl font-extrabold text-ink">Thực tập sinh &amp; Cộng tác viên</h3>
+                  <p class="mt-1 font-semibold text-slate-500">Thư viện Khoa học Tổng hợp TP.HCM</p>
+                </div>
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-plum-50 text-plum-700"><i data-lucide="library-big" class="h-5 w-5"></i></span>
+              </div>
+              <ul class="mt-6 space-y-3 text-sm leading-7 text-slate-600">
+                <li class="flex gap-3"><i data-lucide="check" class="mt-1 h-4 w-4 shrink-0 text-plum-600"></i><span>Phân loại và số hóa tài liệu, đảm bảo thông tin và tài liệu được lưu trữ khoa học, dễ tra cứu (Thực tập sinh).</span></li>
+                <li class="flex gap-3"><i data-lucide="check" class="mt-1 h-4 w-4 shrink-0 text-plum-600"></i><span>Nhận diện, xử lý rủi ro phát sinh trong quá trình phục vụ bạn đọc (Thực tập sinh).</span></li>
+                <li class="flex gap-3"><i data-lucide="check" class="mt-1 h-4 w-4 shrink-0 text-plum-600"></i><span>Tham gia ban tổ chức các sự kiện văn hóa, điều phối hậu cần, hỗ trợ thí sinh và quản lý thông tin thí sinh (Cộng tác viên).</span></li>
+              </ul>
+            </article>
+            <article class="relative rounded-3xl border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+              <span class="absolute -left-[2.05rem] top-8 h-4 w-4 rounded-full border-4 border-white bg-coral-500 ring-2 ring-coral-100"></span>
+              <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-[.14em] text-coral-600">2019 - 2021</p>
+                  <h3 class="mt-2 font-display text-xl font-extrabold text-ink">Nhân viên Bán hàng</h3>
+                  <p class="mt-1 font-semibold text-slate-500">Ministop Việt Nam</p>
+                </div>
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-coral-50 text-coral-600"><i data-lucide="store" class="h-5 w-5"></i></span>
+              </div>
+              <ul class="mt-6 space-y-3 text-sm leading-7 text-slate-600">
+                <li class="flex gap-3"><i data-lucide="check" class="mt-1 h-4 w-4 shrink-0 text-coral-500"></i><span>Thu ngân, quản lý doanh thu, kiểm kê hàng hóa.</span></li>
+                <li class="flex gap-3"><i data-lucide="check" class="mt-1 h-4 w-4 shrink-0 text-coral-500"></i><span>Đón tiếp khách hàng, tư vấn sản phẩm, giải quyết khiếu nại.</span></li>
+                <li class="flex gap-3"><i data-lucide="check" class="mt-1 h-4 w-4 shrink-0 text-coral-500"></i><span>Làm việc nhóm linh hoạt, sắp xếp hàng hóa theo tiêu chuẩn, giữ gìn không gian cửa hàng sạch sẽ.</span></li>
+              </ul>
+            </article>
+          </div>
+          <aside class="h-fit rounded-3xl bg-ink p-7 text-white sm:p-9">
+            <div class="flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-coral-300"><i data-lucide="calendar-heart" class="h-5 w-5"></i></span>
+              <div><p class="text-xs font-bold uppercase tracking-[.15em] text-plum-100">Đóng góp cộng đồng</p><h3 class="mt-1 font-display text-xl font-extrabold">Hoạt động &amp; sự kiện</h3></div>
+            </div>
+            <p class="mt-5 leading-7 text-plum-50/80">Góp sức vào công tác tổ chức và hỗ trợ các hoạt động văn hóa, cộng đồng.</p>
+            <div class="mt-7 flex flex-wrap gap-2.5">
+              <span class="rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white">“Nét vẽ xanh”</span>
+              <span class="rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white">“Áo dài và Hoa”</span>
+              <span class="rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white">“Ngày Sách và Văn hóa đọc Việt Nam lần 1”</span>
+            </div>
+            <div class="mt-8 border-t border-white/15 pt-6">
+              <p class="flex items-center gap-2 text-sm font-semibold text-plum-100"><i data-lucide="users-round" class="h-4 w-4"></i>Cộng tác viên định kỳ &amp; sự kiện</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="ky-nang" class="scroll-mt-24 bg-white py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="mb-10 text-center sm:mb-12">
+          <p class="mb-3 text-sm font-bold uppercase tracking-[.18em] text-plum-700">Năng lực</p>
+          <h2 class="font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">Kỹ năng chuyên môn.</h2>
+          <p class="mx-auto mt-4 max-w-xl leading-7 text-slate-500">Những kỹ năng tôi tích lũy qua học tập, công việc và trải nghiệm thực tế.</p>
+        </div>
+        <div class="grid gap-5 md:grid-cols-3">
+          <article class="rounded-3xl border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:shadow-card sm:p-7">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-plum-100 text-plum-800"><i data-lucide="laptop" class="h-6 w-6"></i></span>
+            <h3 class="mt-5 font-display text-lg font-extrabold text-ink">Công cụ &amp; Tin học</h3>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span class="skill-chip">MS Office</span><span class="skill-chip">Visual Studio Code</span><span class="skill-chip">CapCut</span><span class="skill-chip">WooCommerce</span><span class="skill-chip">WordPress</span><span class="skill-chip">Canva</span><span class="skill-chip">Gemini</span><span class="skill-chip">ChatGPT</span><span class="skill-chip">TikTok</span><span class="skill-chip">Meta Business Suite</span>
+            </div>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:shadow-card sm:p-7">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-coral-100 text-coral-600"><i data-lucide="heart-handshake" class="h-6 w-6"></i></span>
+            <h3 class="mt-5 font-display text-lg font-extrabold text-ink">Kỹ năng mềm &amp; Vận hành</h3>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span class="skill-chip">Giao tiếp</span><span class="skill-chip">Làm việc nhóm</span><span class="skill-chip">Xử lý khiếu nại &amp; CSKH</span><span class="skill-chip">Điều phối hậu cần</span><span class="skill-chip">Quản lý dữ liệu</span>
+            </div>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-slate-50 p-6 transition hover:-translate-y-1 hover:shadow-card sm:p-7">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-berry-100 text-berry-700"><i data-lucide="languages" class="h-6 w-6"></i></span>
+            <h3 class="mt-5 font-display text-lg font-extrabold text-ink">Ngoại ngữ</h3>
+            <div class="mt-5 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-berry-50 text-berry-700"><i data-lucide="message-circle" class="h-5 w-5"></i></span>
+              <div><p class="font-bold text-ink">Tiếng Anh</p><p class="mt-0.5 text-sm text-slate-500">Trình độ B1</p></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="lien-he" class="scroll-mt-24 py-20 sm:py-24">
+      <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <div class="overflow-hidden rounded-[2rem] bg-ink shadow-soft">
+          <div class="grid lg:grid-cols-[.9fr_1.1fr]">
+            <div class="p-7 text-white sm:p-10 lg:p-12">
+              <p class="text-sm font-bold uppercase tracking-[.18em] text-plum-200">Kết nối với tôi</p>
+              <h2 class="mt-3 font-display text-3xl font-extrabold leading-tight sm:text-4xl">Cùng tạo nên<br>điều ý nghĩa.</h2>
+              <p class="mt-5 max-w-md leading-7 text-plum-50/75">Tôi luôn sẵn sàng kết nối và trao đổi về cơ hội học hỏi, hợp tác trong lĩnh vực thương mại điện tử.</p>
+              <div class="mt-8 space-y-5">
+                <a href="mailto:ngocviphan.23@gmail.com" class="group flex items-center gap-4">
+                  <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-plum-100 transition group-hover:bg-white/20"><i data-lucide="mail" class="h-5 w-5"></i></span>
+                  <span><span class="block text-xs text-plum-100/70">Email</span><span class="mt-0.5 block font-semibold text-white">ngocviphan.23@gmail.com</span></span>
+                </a>
+                <a href="tel:+84396247507" class="group flex items-center gap-4">
+                  <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-plum-100 transition group-hover:bg-white/20"><i data-lucide="phone" class="h-5 w-5"></i></span>
+                  <span><span class="block text-xs text-plum-100/70">Điện thoại</span><span class="mt-0.5 block font-semibold text-white">039 624 7507</span></span>
+                </a>
+                <div class="flex items-center gap-4">
+                  <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-plum-100"><i data-lucide="map-pin" class="h-5 w-5"></i></span>
+                  <span><span class="block text-xs text-plum-100/70">Địa chỉ</span><span class="mt-0.5 block font-semibold text-white">Hưng Long, TP.HCM</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-plum-100"><i data-lucide="cake" class="h-5 w-5"></i></span>
+                  <span><span class="block text-xs text-plum-100/70">Ngày sinh</span><span class="mt-0.5 block font-semibold text-white">23/10/2000</span></span>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white p-7 sm:p-10 lg:p-12">
+              <div>
+                <p class="text-sm font-bold uppercase tracking-[.15em] text-plum-700">Gửi lời nhắn</p>
+                <h3 class="mt-2 font-display text-2xl font-extrabold text-ink">Liên hệ nhanh</h3>
+              </div>
+              <form id="contact-form" class="mt-7 space-y-5">
+                <div>
+                  <label for="contact-name" class="mb-2 block text-sm font-semibold text-slate-700">Họ tên</label>
+                  <input id="contact-name" name="name" type="text" autocomplete="name" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-ink outline-none transition placeholder:text-slate-400 focus:border-plum-500 focus:bg-white focus:ring-4 focus:ring-plum-100" placeholder="Tên của bạn">
+                </div>
+                <div>
+                  <label for="contact-email" class="mb-2 block text-sm font-semibold text-slate-700">Email</label>
+                  <input id="contact-email" name="email" type="email" autocomplete="email" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-ink outline-none transition placeholder:text-slate-400 focus:border-plum-500 focus:bg-white focus:ring-4 focus:ring-plum-100" placeholder="email@domain.com">
+                </div>
+                <div>
+                  <label for="contact-message" class="mb-2 block text-sm font-semibold text-slate-700">Lời nhắn</label>
+                  <textarea id="contact-message" name="message" rows="4" required class="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-ink outline-none transition placeholder:text-slate-400 focus:border-plum-500 focus:bg-white focus:ring-4 focus:ring-plum-100" placeholder="Bạn muốn trao đổi điều gì?"></textarea>
+                </div>
+                <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-coral-500 px-6 py-3.5 text-sm font-bold text-ink transition hover:bg-coral-600 sm:w-auto">
+                  Gửi lời nhắn <i data-lucide="send" class="h-4 w-4"></i>
+                </button>
+                <p id="form-status" class="min-h-5 text-sm text-slate-500" aria-live="polite"></p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-6 text-center sm:flex-row sm:px-8 sm:text-left lg:px-10">
+      <a href="#trang-chu" class="font-display text-lg font-extrabold text-ink">Tường Vy<span class="text-plum-600">.</span></a>
+      <p class="text-sm text-slate-500">© <span id="current-year"></span> Phan Ngọc Tường Vy · Portfolio cá nhân</p>
+      <a href="#trang-chu" class="inline-flex items-center gap-1 text-sm font-semibold text-plum-700 hover:text-plum-900">Lên đầu trang <i data-lucide="arrow-up" class="h-4 w-4"></i></a>
+    </div>
+  </footer>
+
+  <div id="rose-overlay" aria-label="Những bó hoa chúc mừng ngày 20/11"></div>
+  <section id="greeting-modal" aria-hidden="true">
+    <div class="greeting-card" role="dialog" aria-modal="true" aria-labelledby="greeting-title" aria-describedby="greeting-message" tabindex="-1">
+      <button id="greeting-music-toggle" type="button" aria-pressed="false" aria-label="Bật nhạc chúc mừng">
+        <i data-lucide="music-2" data-music-icon class="h-4 w-4"></i>
+        <span id="greeting-music-label">Bật nhạc</span>
+      </button>
+      <button id="greeting-close" type="button" class="absolute right-7 top-7 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-plum-50 text-plum-800 transition hover:bg-plum-100" aria-label="Đóng thiệp">
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+      <div class="relative text-center">
+        <div class="mb-4 flex justify-center gap-2 greeting-rose" aria-hidden="true">
+          <i data-lucide="flower-2" class="h-6 w-6"></i><i data-lucide="heart" class="mt-2 h-4 w-4 text-coral-500"></i><i data-lucide="flower-2" class="h-6 w-6"></i>
+        </div>
+        <p class="text-xs font-bold uppercase tracking-[.22em] text-plum-600">Tri ân những người gieo mầm tri thức</p>
+        <h2 id="greeting-title" class="mx-auto mt-3 max-w-md font-display text-2xl font-extrabold leading-snug text-ink sm:text-3xl">CHÚC MỪNG<br>NGÀY NHÀ GIÁO VIỆT NAM 20/11</h2>
+        <div class="mx-auto my-5 h-1 w-16 rounded-full bg-coral-500"></div>
+        <p id="greeting-message" class="text-left text-sm leading-7 text-slate-700 sm:text-base sm:leading-8">Nhân ngày 20/11 xin gửi đến Thầy Cô lời biết ơn sâu sắc nhất cho những giờ dạy, những bài học quý giá và tình yêu thương vô bờ đã dành cho chúng em. Kính chúc Thầy Cô luôn mạnh khỏe, hạnh phúc và tiếp tục truyền cảm hứng cho mỗi thế hệ học trò tiến bước trên con đường tri thức.</p>
+        <p class="mt-5 text-right font-display text-sm font-bold text-plum-800 sm:text-base">Từ sinh viên: PHAN NGỌC TƯỜNG VY</p>
+        <button id="greeting-close-action" type="button" class="mt-7 inline-flex items-center justify-center gap-2 rounded-full bg-plum-700 px-6 py-3 text-sm font-bold text-white transition hover:bg-plum-900">
+          Đóng thiệp <i data-lucide="heart" class="h-4 w-4"></i>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .skill-chip { display: inline-flex; border-radius: 9999px; background: white; padding: .5rem .75rem; font-size: .75rem; font-weight: 600; line-height: 1rem; color: #475569; }
+  </style>
+  <script>
+    lucide.createIcons();
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+
+    const menuButton = document.getElementById("menu-button");
+    const mobileMenu = document.getElementById("mobile-menu");
+    menuButton.addEventListener("click", () => {
+      const isExpanded = menuButton.getAttribute("aria-expanded") === "true";
+      menuButton.setAttribute("aria-expanded", String(!isExpanded));
+      menuButton.setAttribute("aria-label", isExpanded ? "Mở menu" : "Đóng menu");
+      mobileMenu.classList.toggle("hidden", isExpanded);
+      menuButton.innerHTML = isExpanded
+        ? '<i data-lucide="menu" class="h-6 w-6"></i>'
+        : '<i data-lucide="x" class="h-6 w-6"></i>';
+      lucide.createIcons();
+    });
+
+    document.querySelectorAll(".mobile-link").forEach((link) => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.add("hidden");
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.setAttribute("aria-label", "Mở menu");
+        menuButton.innerHTML = '<i data-lucide="menu" class="h-6 w-6"></i>';
+        lucide.createIcons();
+      });
+    });
+
+    document.getElementById("contact-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      if (!form.reportValidity()) return;
+
+      const formData = new FormData(form);
+      const name = formData.get("name").toString().trim();
+      const email = formData.get("email").toString().trim();
+      const message = formData.get("message").toString().trim();
+      const subject = encodeURIComponent("Liên hệ từ " + name);
+      const body = encodeURIComponent("Họ tên: " + name + "\nEmail: " + email + "\n\nLời nhắn:\n" + message);
+      document.getElementById("form-status").textContent = "Đang mở ứng dụng email để gửi lời nhắn...";
+      window.location.href = "mailto:ngocviphan.23@gmail.com?subject=" + subject + "&body=" + body;
+    });
+
+    const roseOverlay = document.getElementById("rose-overlay");
+    const greetingModal = document.getElementById("greeting-modal");
+    const greetingCard = greetingModal.querySelector(".greeting-card");
+    const musicToggle = document.getElementById("greeting-music-toggle");
+    const musicLabel = document.getElementById("greeting-music-label");
+    const roseColors = ["#9F1239", "#E879A9", "#F5C842", "#F47F6B", "#BB5098"];
+    const leafColors = ["#3E8060", "#568B64", "#759A64"];
+    const bouquetTypes = ["round", "cone", "ribbon", "leafy", "classic"];
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let activeBouquets = 0;
+    let previousBodyOverflow = "";
+    let lastFocusedElement = null;
+    let audioContext = null;
+    let musicPlaying = false;
+    let musicMuted = false;
+    let musicMaster = null;
+    let musicScheduler = null;
+    let nextMusicNoteTime = 0;
+    let musicNoteIndex = 0;
+    let musicRunId = 0;
+    const musicBoxMelody = [
+      72, 76, 79, 76, 74, 77, 81, 77,
+      72, 76, 79, 84, 81, 79, 76, 74,
+      72, 74, 76, 79, 76, 74, 71, 72
+    ];
+    const musicBoxStep = .53;
+    const musicBoxFrequencies = musicBoxMelody.map((note) => 440 * Math.pow(2, (note - 69) / 12));
+
+    function roseMarkup(x, y, scale, color) {
+      const petals = Array.from({ length: 8 }, (_, index) =>
+        `<ellipse cx="0" cy="-5.5" rx="3.1" ry="5" transform="rotate(${index * 45})" fill="${color}" opacity="${index % 2 ? ".86" : "1"}"/>`
+      ).join("");
+      return `<g transform="translate(${x} ${y}) scale(${scale})">
+        <circle r="8.3" fill="${color}" opacity=".18"/>
+        ${petals}
+        <circle r="2.8" fill="#F8D77A"/>
+        <circle r="1.25" fill="#9A5A36"/>
+      </g>`;
+    }
+
+    function bouquetSvg(type, color, index) {
+      const roseSpots = index % 2 === 0
+        ? [[23, 31, .75], [45, 22, .9], [66, 31, .75], [34, 45, .68], [56, 45, .68]]
+        : [[26, 29, .78], [46, 21, .92], [65, 30, .78], [37, 43, .76], [56, 43, .76], [47, 49, .6]];
+      const flowers = roseSpots.map(([x, y, scale], position) =>
+        roseMarkup(x, y, scale, roseColors[(index + position) % roseColors.length])
+      ).join("");
+      const leafMarkup = `
+        <path d="M37 58 Q20 50 18 39 Q33 42 39 55Z" fill="${leafColors[index % leafColors.length]}"/>
+        <path d="M53 59 Q69 49 72 39 Q58 42 51 56Z" fill="${leafColors[(index + 1) % leafColors.length]}"/>
+        <path d="M42 63 Q31 53 32 44 Q43 49 45 61Z" fill="${leafColors[(index + 2) % leafColors.length]}"/>`;
+      let wrap;
+      if (type === "round") {
+        wrap = `<path d="M13 49 Q45 58 77 49 L64 91 Q45 99 26 91Z" fill="#E9E1F1" stroke="#7A5197" stroke-width="1.5"/>
+          <path d="M25 55 Q45 61 65 55 L58 89 Q45 94 32 89Z" fill="#FFF8F3" opacity=".8"/>`;
+      } else if (type === "cone") {
+        wrap = `<path d="M16 48 Q45 57 74 48 L56 94 Q45 99 34 94Z" fill="#F8B5A7" stroke="#E66D5E" stroke-width="1.5"/>
+          <path d="M24 53 Q45 60 66 53 L55 90 Q45 94 35 90Z" fill="#FFF4E8" opacity=".84"/>`;
+      } else if (type === "ribbon") {
+        wrap = `<path d="M15 49 Q45 57 75 49 L61 91 Q45 98 29 91Z" fill="#BB5098" stroke="#87336C" stroke-width="1.5"/>
+          <path d="M21 53 Q45 60 69 53 L59 87 Q45 93 31 87Z" fill="#F9EFF6" opacity=".75"/>
+          <path d="M40 77 Q33 68 29 76 Q28 83 42 82 Q54 83 53 76 Q50 69 43 77Z" fill="#F5C842" stroke="#D09C38" stroke-width="1.2"/>
+          <path d="M40 80 L36 94 L43 91 L46 95 L46 80Z" fill="#F5C842" stroke="#D09C38" stroke-width="1"/>`;
+      } else if (type === "leafy") {
+        wrap = `<path d="M14 48 Q45 58 76 48 L61 91 Q45 98 29 91Z" fill="#F5E63C" stroke="#D4BD37" stroke-width="1.5"/>
+          <path d="M23 54 Q45 61 67 54 L58 88 Q45 94 32 88Z" fill="#FFF9DF" opacity=".8"/>`;
+      } else {
+        wrap = `<path d="M18 49 Q45 58 72 49 L59 92 Q45 98 31 92Z" fill="#F47F6B" stroke="#E66D5E" stroke-width="1.5"/>
+          <path d="M25 54 Q45 61 65 54 L56 88 Q45 93 34 88Z" fill="#FFF4F0" opacity=".84"/>`;
+      }
+      const leaves = type === "leafy" ? leafMarkup + `
+        <path d="M55 61 Q72 55 77 45 Q62 47 53 59Z" fill="${leafColors[(index + 1) % leafColors.length]}"/>` : "";
+      return `<svg viewBox="0 0 90 100" role="presentation" aria-hidden="true">
+        <g fill="none" stroke="#547957" stroke-width="1.8" stroke-linecap="round">
+          <path d="M45 51 L45 79"/><path d="M34 47 L42 78"/><path d="M56 48 L48 78"/><path d="M24 40 L40 77"/><path d="M66 40 L50 77"/>
+        </g>
+        ${leafMarkup}${leaves}${flowers}${wrap}
+        <path d="M37 89 Q45 84 53 89" fill="none" stroke="#7A5197" stroke-width="1.4" opacity=".75"/>
+      </svg>`;
+    }
+
+    function spawnBouquet() {
+      if (activeBouquets >= 10) return;
+      const index = Math.floor(Math.random() * 1000);
+      const type = bouquetTypes[index % bouquetTypes.length];
+      const bouquet = document.createElement("button");
+      bouquet.type = "button";
+      bouquet.className = "falling-bouquet";
+      bouquet.style.setProperty("--flower-left", `${Math.random() * 91 + 3}%`);
+      bouquet.style.setProperty("--flower-top", `${Math.random() * 72 + 5}vh`);
+      bouquet.style.setProperty("--fall-duration", `${reducedMotion ? 28 : 18 + Math.random() * 10}s`);
+      bouquet.setAttribute("aria-label", "Bấm vào bó hoa để mở thiệp chúc mừng 20/11");
+      bouquet.innerHTML = bouquetSvg(type, roseColors[index % roseColors.length], index);
+      activeBouquets += 1;
+      bouquet.addEventListener("click", (event) => {
+        const bounds = bouquet.getBoundingClientRect();
+        const x = event.clientX || bounds.left + bounds.width / 2;
+        const y = event.clientY || bounds.top + bounds.height / 2;
+        burstPetals(x, y);
+        playCelebrationSound();
+        bouquet.remove();
+        activeBouquets -= 1;
+        openGreeting(bouquet);
+      });
+      bouquet.addEventListener("animationend", (event) => {
+        if (event.animationName !== "bouquet-fall") return;
+        bouquet.remove();
+        activeBouquets -= 1;
+      }, { once: false });
+      roseOverlay.appendChild(bouquet);
+    }
+
+    function burstPetals(x, y) {
+      const colors = ["#9F1239", "#E879A9", "#F5C842", "#F47F6B", "#BB5098"];
+      const count = 24 + Math.floor(Math.random() * 7);
+      for (let index = 0; index < count; index += 1) {
+        const petal = document.createElement("span");
+        const angle = (Math.PI * 2 * index) / count + (Math.random() - .5) * .35;
+        const distance = 55 + Math.random() * 125;
+        petal.className = "rose-petal";
+        petal.style.left = `${x}px`;
+        petal.style.top = `${y}px`;
+        petal.style.setProperty("--petal-color", colors[index % colors.length]);
+        petal.style.setProperty("--petal-x", `${Math.cos(angle) * distance}px`);
+        petal.style.setProperty("--petal-y", `${Math.sin(angle) * distance + 65}px`);
+        petal.style.setProperty("--petal-rotate", `${Math.random() * 680 - 340}deg`);
+        roseOverlay.appendChild(petal);
+        petal.addEventListener("animationend", () => petal.remove(), { once: true });
+        window.setTimeout(() => petal.remove(), 1800);
+      }
+    }
+
+    function openGreeting(source) {
+      lastFocusedElement = source;
+      previousBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      greetingModal.classList.add("is-open");
+      greetingModal.setAttribute("aria-hidden", "false");
+      musicMuted = false;
+      startMusicBox();
+      window.setTimeout(() => document.getElementById("greeting-close").focus(), 30);
+    }
+
+    function closeGreeting() {
+      if (!greetingModal.classList.contains("is-open")) return;
+      stopMusicBox();
+      greetingModal.classList.remove("is-open");
+      greetingModal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = previousBodyOverflow;
+      if (lastFocusedElement && lastFocusedElement.isConnected) lastFocusedElement.focus();
+    }
+
+    function playCelebrationSound() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) {
+        console.warn("Web Audio API không được trình duyệt này hỗ trợ.");
+        return;
+      }
+      try {
+        audioContext = audioContext || new AudioContextClass();
+        if (audioContext.state === "suspended") audioContext.resume();
+        const now = audioContext.currentTime;
+        const pop = audioContext.createOscillator();
+        const popGain = audioContext.createGain();
+        pop.type = "sine";
+        pop.frequency.setValueAtTime(190, now);
+        pop.frequency.exponentialRampToValueAtTime(58, now + .16);
+        popGain.gain.setValueAtTime(.42, now);
+        popGain.gain.exponentialRampToValueAtTime(.001, now + .19);
+        pop.connect(popGain);
+        popGain.connect(audioContext.destination);
+        pop.start(now);
+        pop.stop(now + .2);
+        [523.25, 659.25, 783.99, 1046.5].forEach((frequency, index) => {
+          const start = now + .08 + index * .12;
+          const bell = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          bell.type = "sine";
+          bell.frequency.setValueAtTime(frequency, start);
+          gain.gain.setValueAtTime(.0001, start);
+          gain.gain.exponentialRampToValueAtTime(.13, start + .025);
+          gain.gain.exponentialRampToValueAtTime(.001, start + .48);
+          bell.connect(gain);
+          gain.connect(audioContext.destination);
+          bell.start(start);
+          bell.stop(start + .5);
+        });
+      } catch (error) {
+        console.error("Không thể phát hiệu ứng âm thanh chúc mừng.", error);
+      }
+    }
+
+    function updateMusicControl() {
+      musicToggle.classList.toggle("is-playing", musicPlaying);
+      musicToggle.setAttribute("aria-pressed", String(musicPlaying));
+      musicToggle.setAttribute("aria-label", musicPlaying ? "Tắt nhạc chúc mừng" : "Bật nhạc chúc mừng");
+      musicLabel.textContent = musicPlaying ? "Đang phát nhạc" : "Bật nhạc";
+    }
+
+    function scheduleMusicNote(runId) {
+      if (runId !== musicRunId || !musicPlaying || !musicMaster) return;
+      const now = audioContext.currentTime;
+      while (nextMusicNoteTime < now + .12) {
+        const frequency = musicBoxFrequencies[musicNoteIndex];
+        const noteStart = Math.max(nextMusicNoteTime, now + .015);
+        const noteDuration = .42;
+        const tone = audioContext.createOscillator();
+        const overtone = audioContext.createOscillator();
+        const noteGain = audioContext.createGain();
+        const overtoneGain = audioContext.createGain();
+        tone.type = "sine";
+        overtone.type = "sine";
+        tone.frequency.setValueAtTime(frequency, noteStart);
+        overtone.frequency.setValueAtTime(frequency * 2.01, noteStart);
+        noteGain.gain.setValueAtTime(.0001, noteStart);
+        noteGain.gain.exponentialRampToValueAtTime(.32, noteStart + .012);
+        noteGain.gain.exponentialRampToValueAtTime(.0001, noteStart + noteDuration);
+        overtoneGain.gain.setValueAtTime(.0001, noteStart);
+        overtoneGain.gain.exponentialRampToValueAtTime(.055, noteStart + .01);
+        overtoneGain.gain.exponentialRampToValueAtTime(.0001, noteStart + .24);
+        tone.connect(noteGain);
+        noteGain.connect(musicMaster);
+        overtone.connect(overtoneGain);
+        overtoneGain.connect(musicMaster);
+        tone.start(noteStart);
+        overtone.start(noteStart);
+        tone.stop(noteStart + noteDuration + .02);
+        overtone.stop(noteStart + .26);
+        nextMusicNoteTime += musicBoxStep;
+        musicNoteIndex = (musicNoteIndex + 1) % musicBoxFrequencies.length;
+      }
+    }
+
+    function startMusicBox() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) {
+        console.warn("Web Audio API không được trình duyệt này hỗ trợ.");
+        musicPlaying = false;
+        updateMusicControl();
+        return;
+      }
+      try {
+        audioContext = audioContext || new AudioContextClass();
+        const runId = ++musicRunId;
+        if (musicScheduler) window.clearInterval(musicScheduler);
+        musicScheduler = null;
+        if (audioContext.state === "suspended") audioContext.resume();
+        if (musicMaster) musicMaster.disconnect();
+        musicMaster = audioContext.createGain();
+        musicMaster.gain.setValueAtTime(.0001, audioContext.currentTime);
+        musicMaster.gain.linearRampToValueAtTime(.16, audioContext.currentTime + .12);
+        musicMaster.connect(audioContext.destination);
+        musicPlaying = true;
+        musicNoteIndex = 0;
+        nextMusicNoteTime = audioContext.currentTime + .04;
+        updateMusicControl();
+        scheduleMusicNote(runId);
+        musicScheduler = window.setInterval(() => scheduleMusicNote(runId), 70);
+      } catch (error) {
+        musicPlaying = false;
+        updateMusicControl();
+        console.error("Không thể phát giai điệu chúc mừng bằng Web Audio API.", error);
+      }
+    }
+
+    function stopMusicBox() {
+      musicPlaying = false;
+      musicRunId += 1;
+      if (musicScheduler) window.clearInterval(musicScheduler);
+      musicScheduler = null;
+      updateMusicControl();
+      if (!audioContext || !musicMaster) {
+        musicNoteIndex = 0;
+        return;
+      }
+      const masterToFade = musicMaster;
+      const fadeStart = audioContext.currentTime;
+      masterToFade.gain.cancelScheduledValues(fadeStart);
+      masterToFade.gain.setValueAtTime(Math.max(masterToFade.gain.value, .0001), fadeStart);
+      masterToFade.gain.linearRampToValueAtTime(.0001, fadeStart + .3);
+      musicMaster = null;
+      musicNoteIndex = 0;
+      window.setTimeout(() => masterToFade.disconnect(), 350);
+    }
+
+    document.getElementById("greeting-close").addEventListener("click", closeGreeting);
+    document.getElementById("greeting-close-action").addEventListener("click", closeGreeting);
+    greetingModal.addEventListener("click", (event) => {
+      if (event.target === greetingModal) closeGreeting();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeGreeting();
+    });
+    musicToggle.addEventListener("click", () => {
+      if (musicPlaying) {
+        musicMuted = true;
+        stopMusicBox();
+      } else {
+        musicMuted = false;
+        if (greetingModal.classList.contains("is-open")) startMusicBox();
+      }
+    });
+    spawnBouquet();
+    window.setInterval(spawnBouquet, reducedMotion ? 3600 : 2100);
+  </script>
+</body>
+</html>
