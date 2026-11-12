@@ -1,0 +1,144 @@
+html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+    body { font-family: "Montserrat", sans-serif; background-color: #E2E0E4; }
+    h1, h2, h3, .font-display { font-family: "Montserrat", sans-serif; }
+    ::selection { background: #F5E63C; color: #35285F; }
+    .hero-grid {
+      background-image: radial-gradient(rgba(83, 68, 169, .12) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+    .timeline-line::before {
+      content: "";
+      position: absolute;
+      top: .7rem;
+      bottom: .7rem;
+      left: .55rem;
+      width: 1px;
+      background: #D5C7E2;
+    }
+    .reveal { animation: rise-in .7s ease-out both; }
+    #rose-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .falling-bouquet {
+      position: absolute;
+      top: var(--flower-top, -110px);
+      left: var(--flower-left);
+      width: 82px;
+      height: 96px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      pointer-events: auto;
+      cursor: pointer;
+      filter: drop-shadow(0 5px 5px rgba(53, 40, 95, .18));
+      transform-origin: 50% 35%;
+      animation: bouquet-fall var(--fall-duration) linear forwards, bouquet-sway 3.2s ease-in-out infinite alternate;
+      will-change: transform, top;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .falling-bouquet svg { display: block; width: 100%; height: 100%; overflow: visible; }
+    @keyframes bouquet-fall {
+      from { top: -110px; }
+      to { top: calc(100vh + 115px); }
+    }
+    @keyframes bouquet-sway {
+      from { margin-left: -13px; rotate: -9deg; }
+      to { margin-left: 13px; rotate: 9deg; }
+    }
+    .rose-petal {
+      position: fixed;
+      z-index: 9992;
+      width: 13px;
+      height: 19px;
+      border-radius: 80% 15% 70% 30%;
+      background: var(--petal-color);
+      pointer-events: none;
+      box-shadow: inset -2px -2px 3px rgba(75, 20, 45, .14);
+      animation: petal-burst 1.15s cubic-bezier(.12,.65,.25,1) forwards;
+      will-change: transform, opacity;
+    }
+    @keyframes petal-burst {
+      0% { opacity: 1; transform: translate(-50%, -50%) rotate(0) scale(.5); }
+      65% { opacity: 1; }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--petal-x)), calc(-50% + var(--petal-y))) rotate(var(--petal-rotate)) scale(.9); }
+    }
+    #greeting-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(31, 24, 55, .55);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    #greeting-modal.is-open { opacity: 1; visibility: visible; }
+    .greeting-card {
+      position: relative;
+      width: min(100%, 590px);
+      max-height: min(88vh, 760px);
+      overflow-y: auto;
+      border: 1px solid rgba(187, 80, 152, .35);
+      border-radius: 28px;
+      padding: clamp(24px, 5vw, 42px);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(245, 230, 60, .16), transparent 25%),
+        radial-gradient(circle at 90% 92%, rgba(187, 80, 152, .12), transparent 28%),
+        #fffdfb;
+      box-shadow: 0 28px 90px rgba(25, 16, 51, .3);
+      transform: scale(.82) translateY(18px);
+      transition: transform .38s cubic-bezier(.2,.8,.2,1);
+    }
+    #greeting-modal.is-open .greeting-card { transform: scale(1) translateY(0); }
+    .greeting-card::before {
+      position: absolute;
+      inset: 9px;
+      border: 1px solid rgba(122, 81, 151, .24);
+      border-radius: 21px;
+      content: "";
+      pointer-events: none;
+    }
+    .greeting-rose { color: #BB5098; }
+    #greeting-music-toggle {
+      position: absolute;
+      top: 28px;
+      left: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(122, 81, 151, .18);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: rgba(245, 242, 249, .92);
+      color: #5344A9;
+      font: 600 10px/1.2 "Montserrat", sans-serif;
+      cursor: pointer;
+    }
+    #greeting-music-toggle:focus-visible, .falling-bouquet:focus-visible, #greeting-close:focus-visible {
+      outline: 3px solid #F5E63C;
+      outline-offset: 3px;
+    }
+    #greeting-music-toggle.is-playing [data-music-icon] { animation: music-note 1.15s ease-in-out infinite; }
+    @keyframes music-note { 50% { transform: translateY(-3px) rotate(12deg) scale(1.12); } }
+    @keyframes rise-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      #greeting-modal, .greeting-card { transition-duration: .01ms !important; }
+      .falling-bouquet { top: var(--flower-top); animation: none; }
+    }
+    @media (max-width: 480px) {
+      #greeting-music-toggle { top: 21px; left: 21px; padding: 6px 8px; }
+      #greeting-close { top: 21px; right: 21px; }
+    }
+
+.skill-chip { display: inline-flex; border-radius: 9999px; background: white; padding: .5rem .75rem; font-size: .75rem; font-weight: 600; line-height: 1rem; color: #475569; }
